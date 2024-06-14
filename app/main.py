@@ -19,7 +19,8 @@ def main():
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(request[1][6:])}\r\n\r\n{request[1][6:]}"
         client.sendall(response.encode("utf-8"))
     elif request[1] == "/user-agent":
-        print(request)
+        response = request[-1].split("\\")[0]
+        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         client.sendall(response.encode("utf-8"))
     else:
         client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
