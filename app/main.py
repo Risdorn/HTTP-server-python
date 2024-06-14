@@ -12,15 +12,17 @@ def main():
     #server_socket.accept()[0].sendall(b"HTTP/1.1 200 OK\r\n\r\n") # wait for client
     client, address = server_socket.accept()
     request = client.recv(1024).decode("utf-8")
-    request = request.split(" ")[1]
-    if request == "/":
+    request = request.split(" ")
+    if request[1] == "/":
         client.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
+    elif request[1].startswith("/echo"):
+        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(request[1][6:])}\r\n\r\n{request[1][6:]}"
+        client.sendall(response.encode("utf-8"))
+    elif request[1] == "/user-agent":
+        print(request)
+        client.sendall(response.encode("utf-8"))
     else:
-        if request[1:5] == "echo":
-            response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(request[6:])}\r\n\r\n{request[6:]}"
-            client.sendall(response.encode("utf-8"))
-        else:
-            client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
+        client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
     client.close()
 
 
