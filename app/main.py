@@ -40,6 +40,7 @@ def main():
         client, address = server_socket.accept()
         print(f"Client {i} connected")
         threading.Thread(target=client_handler, args=(client,i)).start()
+        i += 1
     server_socket.close()
 
 
