@@ -16,7 +16,11 @@ def main():
     if request == "/":
         client.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
     else:
-        client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
+        if request[1:5] == "echo":
+            response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(request[6:])}\r\n\r\n{request[6:]}"
+            client.sendall(response.encode("utf-8"))
+        else:
+            client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
     client.close()
 
 
