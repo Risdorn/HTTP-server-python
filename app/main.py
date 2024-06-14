@@ -12,14 +12,18 @@ def main():
     #server_socket.accept()[0].sendall(b"HTTP/1.1 200 OK\r\n\r\n") # wait for client
     client, address = server_socket.accept()
     request = client.recv(1024).decode("utf-8")
-    request = request.split(" ")
-    if request[1] == "/":
+    request = request.split("\r\n")
+    request_line = request[0].split(" ")
+    header = request[1:-1]
+    if request_line[1] == "/":
         client.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
-    elif request[1].startswith("/echo"):
-        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(request[1][6:])}\r\n\r\n{request[1][6:]}"
+    elif request_line[1].startswith("/echo"):
+        response = request_line[1].split("/")[-1]
+        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         client.sendall(response.encode("utf-8"))
-    elif request[1] == "/user-agent":
-        response = request[-1].split("\\")[0]
+    elif request_line[1] == "/user-agent":
+        response = header[1].split(": ")[1]
+        print(response)
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         client.sendall(response.encode("utf-8"))
     else:
