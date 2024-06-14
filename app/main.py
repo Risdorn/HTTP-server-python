@@ -14,9 +14,10 @@ def main():
     request = client.recv(1024).decode("utf-8")
     request = request.split(" ")[1]
     if request == "/":
-        server_socket.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
+        client.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
     else:
-        server_socket.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
+        client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
+    client.close()
 
 
 if __name__ == "__main__":
