@@ -3,16 +3,16 @@ import socket
 import threading
 import sys
 
-def request_handler(request_line, header):
-    if request_line[1] == "/":
+def request_handler(request_line, header, request_body):
+    if request_line[0] == "GET" and request_line[1] == "/":
         response = "HTTP/1.1 200 OK\r\n\r\n"
-    elif request_line[1].startswith("/echo"):
+    elif request_line[0] == "GET" and request_line[1].startswith("/echo"):
         response = request_line[1].split("/")[-1]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
-    elif request_line[1] == "/user-agent":
+    elif request_line[0] == "GET" and request_line[1] == "/user-agent":
         response = header[1].split(": ")[1]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
-    elif request_line[1].startswith("/files"):
+    elif request_line[0] == "GET" and request_line[1].startswith("/files"):
         directory = sys.argv[2]
         response = request_line[1].split("/")[-1]
         try:
@@ -21,6 +21,14 @@ def request_handler(request_line, header):
                 response = f"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         except FileNotFoundError:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
+    elif request_line[0] == "POST" and request_line[1].startswith("/files"):
+        response = request_line[1].split("/")[-1]
+        try:
+            with open(f"/{directory}/{response}", "w") as f:
+                f.write(request_body)
+            response = "HTTP/1.1 201 Created\r\n\r\n"
+        except:
+            response = "HTTP/1.1 404 Unable to create\r\n\r\n"
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
     return response
@@ -32,7 +40,8 @@ def client_handler(client, i):
         request = request.split("\r\n")
         request_line = request[0].split(" ")
         header = request[1:-1]
-        response = request_handler(request_line, header)
+        request_body = request[-1]
+        response = request_handler(request_line, header, request_body)
         client.sendall(response.encode("utf-8"))
         print(f"Client {i} received: {response}")
     client.close()
