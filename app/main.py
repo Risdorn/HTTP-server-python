@@ -5,7 +5,7 @@ import sys
 import gzip
 
 def request_handler(request_line, header, request_body):
-    compressed = ""
+    compressed = b""
     if request_line[0] == "GET" and request_line[1] == "/":
         response = "HTTP/1.1 200 OK\r\n\r\n"
     elif request_line[0] == "GET" and request_line[1].startswith("/echo"):
