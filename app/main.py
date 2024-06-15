@@ -14,7 +14,7 @@ def request_handler(request_line, header, request_body):
             response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         else:
             compressed = gzip.compress(response.encode("utf-8"))
-            response = f"HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{compressed.decode('utf-8')}"
+            response = f"HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: {len(compressed)}\r\n\r\n{compressed}"
     elif request_line[0] == "GET" and request_line[1] == "/user-agent":
         response = header["User-Agent"]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
