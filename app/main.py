@@ -42,6 +42,7 @@ def request_handler(request_line, header, request_body, sys_flags):
     # File Creation Response
     elif request_line[0] == "POST" and request_line[1].startswith("/files"):
         print("Recieved File Creation Request")
+        print(sys.argv[2])
         response = request_line[1].split("/")[-1]
         with open(f"/{directory}/{response}", "w") as f:
             f.write(request_body)
@@ -82,6 +83,7 @@ def main():
     # Extracting argument flags
     sys_flags = {}
     if len(sys.argv) > 1 and len(sys.argv) % 2 == 0:
+        print("System Flags Found")
         for i in range(1, len(sys.argv), 2):
             sys_flags[sys.argv[i]] = sys.argv[i+1]
     print("System Flags: ", sys_flags)
