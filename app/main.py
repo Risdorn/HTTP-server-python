@@ -45,7 +45,7 @@ def client_handler(client, i):
         flags = {}
         for header in headers:
             header = header.split(": ")
-            print(header)
+            if len(header) != 2: continue
             flags[header[0]] = header[1]
         header = flags
         request_body = request[-1]
