@@ -8,13 +8,13 @@ def request_handler(request_line, header, request_body):
         response = "HTTP/1.1 200 OK\r\n\r\n"
     elif request_line[0] == "GET" and request_line[1].startswith("/echo"):
         response = request_line[1].split("/")[-1]
-        encoding = header[1].split(": ")[-1]
-        if encoding == "gzip":
+        encoding = header["Accept-Encoding"]
+        if encoding.find("gzip") != -1:
             response = f"HTTP/1.1 200 OK\r\nContent-Encoding: {encoding}\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         else:
             response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
     elif request_line[0] == "GET" and request_line[1] == "/user-agent":
-        response = header[1].split(": ")[1]
+        response = header["User-Agent"]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
     elif request_line[0] == "GET" and request_line[1].startswith("/files"):
         directory = sys.argv[2]
@@ -41,7 +41,12 @@ def client_handler(client, i):
         print(f"Client {i} sent: {request}")
         request = request.split("\r\n")
         request_line = request[0].split(" ")
-        header = request[1:-1]
+        headers = request[1:-1]
+        flags = {}
+        for header in headers:
+            header = header.split(": ")
+            flags[header[0]] = header[1]
+        header = flags
         request_body = request[-1]
         response = request_handler(request_line, header, request_body)
         client.sendall(response.encode("utf-8"))
