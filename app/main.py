@@ -84,6 +84,7 @@ def main():
     if len(sys.argv) > 1 and len(sys.argv) % 2 == 0:
         for i in range(1, len(sys.argv), 2):
             sys_flags[sys.argv[i]] = sys.argv[i+1]
+    print("System Flags: ", sys_flags)
     
     # Uncomment this to pass the first stage
     #
