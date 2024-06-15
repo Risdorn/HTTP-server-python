@@ -18,7 +18,7 @@ def request_handler(request_line, header):
         try:
             with open(f"/{directory}/{response}", "r") as f:
                 response = f.read()
-                response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
+                response = f"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         except FileNotFoundError:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
     else:
