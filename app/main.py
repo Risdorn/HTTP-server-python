@@ -43,12 +43,10 @@ def request_handler(request_line, header, request_body, sys_flags):
     elif request_line[0] == "POST" and request_line[1].startswith("/files"):
         print("Recieved File Creation Request")
         response = request_line[1].split("/")[-1]
-        try:
-            with open(f"/{directory}/{response}", "w") as f:
-                f.write(request_body)
-            response = "HTTP/1.1 201 Created\r\n\r\n"
-        except:
-            response = "HTTP/1.1 500 Internal Server Error\r\n\r\n"
+        with open(f"/{directory}/{response}", "w") as f:
+            f.write(request_body)
+            print("File Created")
+        response = "HTTP/1.1 201 Created\r\n\r\n"
     # Invalid Response
     else:
         print("Recieved Invalid Request")
