@@ -22,6 +22,7 @@ def request_handler(request_line, header, request_body):
         except FileNotFoundError:
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
     elif request_line[0] == "POST" and request_line[1].startswith("/files"):
+        directory = sys.argv[2]
         response = request_line[1].split("/")[-1]
         with open(f"/{directory}/{response}", "w") as f:
             f.write(request_body)
