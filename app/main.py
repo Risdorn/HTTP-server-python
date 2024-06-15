@@ -1,6 +1,7 @@
 # Uncomment this to pass the first stage
 import socket
 import threading
+import sys
 
 def request_handler(request_line, header):
     if request_line[1] == "/":
@@ -11,6 +12,15 @@ def request_handler(request_line, header):
     elif request_line[1] == "/user-agent":
         response = header[1].split(": ")[1]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
+    elif request_line[1].startswith("/files"):
+        directory = sys.argv[2]
+        response = request_line[1].split("/")[-1]
+        try:
+            with open(f"/{directory}/{response}", "r") as f:
+                response = f.read()
+                response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
+        except FileNotFoundError:
+            response = "HTTP/1.1 404 Not Found\r\n\r\n"
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
     return response
