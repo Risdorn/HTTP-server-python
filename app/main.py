@@ -13,7 +13,7 @@ def request_handler(request_line, header, request_body):
         if encoding is None or encoding.find("gzip") == -1:
             response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
         else:
-            compressed = gzip.compress(response.encode("utf-8"))
+            compressed = gzip.compress(response)
             response = f"HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: {len(compressed)}\r\n\r\n{compressed}"
     elif request_line[0] == "GET" and request_line[1] == "/user-agent":
         response = header["User-Agent"]
