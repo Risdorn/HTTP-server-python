@@ -82,6 +82,7 @@ def main():
 
     # Extracting argument flags
     sys_flags = {}
+    print(sys.argv)
     if len(sys.argv) > 1 and len(sys.argv) % 2 == 0:
         print("System Flags Found")
         for i in range(1, len(sys.argv), 2):
