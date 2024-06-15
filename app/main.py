@@ -23,12 +23,9 @@ def request_handler(request_line, header, request_body):
             response = "HTTP/1.1 404 Not Found\r\n\r\n"
     elif request_line[0] == "POST" and request_line[1].startswith("/files"):
         response = request_line[1].split("/")[-1]
-        try:
-            with open(f"/{directory}/{response}", "w") as f:
-                f.write(request_body)
-            response = "HTTP/1.1 201 Created\r\n\r\n"
-        except:
-            response = "HTTP/1.1 404 Unable to create\r\n\r\n"
+        with open(f"/{directory}/{response}", "w") as f:
+            f.write(request_body)
+        response = "HTTP/1.1 201 Created\r\n\r\n"
     else:
         response = "HTTP/1.1 404 Not Found\r\n\r\n"
     return response
