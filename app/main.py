@@ -8,11 +8,11 @@ def request_handler(request_line, header, request_body):
         response = "HTTP/1.1 200 OK\r\n\r\n"
     elif request_line[0] == "GET" and request_line[1].startswith("/echo"):
         response = request_line[1].split("/")[-1]
-        encoding = header["Accept-Encoding"]
-        if encoding.find("gzip") != -1:
-            response = f"HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
-        else:
+        encoding = header.get("Accept-Encoding")
+        if encoding is None or encoding.find("gzip") == -1:
             response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
+        else:
+            response = f"HTTP/1.1 200 OK\r\nContent-Encoding: gzip\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
     elif request_line[0] == "GET" and request_line[1] == "/user-agent":
         response = header["User-Agent"]
         response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: {len(response)}\r\n\r\n{response}"
